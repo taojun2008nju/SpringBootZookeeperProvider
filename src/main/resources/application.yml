@@ -1,0 +1,171 @@
+project:
+  application: SpringBootZookeeper
+  name: SpringBootZookeeper
+  chineseName: SpringBoot工程Zookeeeper样例
+  version:  1.0
+  unpackTime: 2020/07/26
+  PIC: taojun
+  versionControlNo: 1.0
+  versionControlPath:
+  framework: SpringBoot
+
+server:
+  port: 8081
+  tomcat:
+    uri-encoding: UTF-8
+    display-name: SpringBoot
+    basedir: /tomcat
+    accesslog:
+      enabled: true
+      buffered: true
+      directory: ./logs
+      file-date-format: _yyyy-MM-dd
+      pattern: '%h %t "%r" %s %b %D %I "%{X-Forwarded-For}i" "%{User-Agent}i" "%{Referer}i" "%{X-Real-IP}i"'
+      prefix: ${project.name}_accesslog
+      rename-on-rotate: false
+      request-attributes-enabled: false
+      rotate: true
+      suffix: .log
+  # 上下文路径
+  servlet:
+    context-path: /springBootZookeeper
+    display-name: springBootZookeeper
+
+spring:
+  profiles:
+    #各个环境配置文件，需要修改  开发：dev， 测试：test，生产：prod
+    active: dev
+  application:
+    name: springBootZookeeper
+  task:
+    pool:
+      corePoolSize: 20
+      maxPoolSize: 400
+      keepAliveSeconds: 30000
+      queueCapacity: 200
+  #redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 2000
+        max-idle: 200
+        min-idle: 100
+        max-wait: 2000
+        # true时连接池不生效, false时连接池生效, lettuce客户端不需要连接池，对性能没有提高，除非用到事务相关的特性再考虑设置连接池
+        share-native-connection: true
+  kafka:
+      # 以逗号分隔的地址列表，用于建立与Kafka集群的初始连接(kafka 默认的端口号为9092)
+      bootstrap-servers: 127.0.0.1:9092
+      producer:
+        # 发生错误后，消息重发的次数。
+        retries: 0
+        #当有多个消息需要被发送到同一个分区时，生产者会把它们放在同一个批次里。该参数指定了一个批次可以使用的内存大小，按照字节数计算。
+        batch-size: 16384
+        # 设置生产者内存缓冲区的大小。
+        buffer-memory: 33554432
+        # 键的序列化方式
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        # 值的序列化方式
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+        # acks=0 ： 生产者在成功写入消息之前不会等待任何来自服务器的响应。
+        # acks=1 ： 只要集群的首领节点收到消息，生产者就会收到一个来自服务器成功响应。
+        # acks=all ：只有当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
+        acks: 1
+      listener:
+        # 在侦听器容器中运行的线程数。
+        concurrency: 5
+        #listner负责ack，每调用一次，就立即commit
+        ack-mode: manual_immediate
+
+#当前服务/应用的名字
+dubbo:
+  application:
+    name: user-service-provider
+#注册中心的协议和地址
+  registry:
+    protocol: zookeeper
+    address: 127.0.0.1:2181
+#通信规则（通信协议和接口）
+  protocol:
+    name: dubbo
+    port: 20880
+    register: true
+#连接监控中心
+  monitor:
+    protocol: registry
+  provider:
+    timeout: 50000
+    retries: 1
+    loadbalance: leastactive
+    validation: true
+    #版本号分组信息
+    group: yst
+    version: 1.0
+  consumer:
+    check: false
+    timeout: 50000
+    retries: 1
+    loadbalance: leastactive
+    validation: true
+    #版本号分组信息
+    group: yst
+    version: 1.0
+#开启包扫描，可替代 @EnableDubbo 注解
+#  scan:
+#    base-packages: com.test.service
+
+#guava缓存
+guava:
+  cache:
+    #设置缓存最大容量
+    maximumSize: 500
+    #设置并发级别
+    concurrencyLevel: 8
+    #设置写缓存后过期时间（单位小时）
+    expireAfterWriteDuration: -1
+    #设置缓存容器的初始容量
+    initialCapacity: 50
+    #维护缓存模块多个,  ALL-所有，当前模块：REPLY,REPLY_REL,PRODUCT_REL,LIMIT_FILTER
+    modules: ALL
+
+logging:
+  config: classpath:log/log4j2-${spring.profiles.active}.xml
+
+#dubbo:
+#  application:
+#    name: zookeeper-provider
+#  registry:
+#    address: zookeeper://127.0.0.1:2181
+#    id: registry-1
+#  protocol:
+#    id: dubbo
+#    name: dubbo
+#    port: 20888
+#    status: server
+#  scan:
+#    basePackages: com.test.service.impl
+#  provider:
+#    version: 1.0
+
+#调用第三方http接口配置
+http:
+  #超时时间，单位毫秒
+  timeOut: 8000
+  #最大连接数
+  maxTotal: 400
+  #单个路由最大连接数
+  defaultMaxPerRoute: 200
+  # 线程池配置
+  thread-pool:
+    core-pool-size: 50
+    max-pool-size: 1000
+    queue-capacity: 10000
+    keep-alive-seconds: 300
+
+#系统参数配置（运营不关心的配置）
+systemparameters:
+  project:
+    name: 'SpringBootZookeeper'
