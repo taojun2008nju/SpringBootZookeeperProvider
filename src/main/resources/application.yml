@@ -117,6 +117,12 @@ dubbo:
 #  scan:
 #    base-packages: com.test.service
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
 #guava缓存
 guava:
   cache:
@@ -133,22 +139,6 @@ guava:
 
 logging:
   config: classpath:log/log4j2-${spring.profiles.active}.xml
-
-#dubbo:
-#  application:
-#    name: zookeeper-provider
-#  registry:
-#    address: zookeeper://127.0.0.1:2181
-#    id: registry-1
-#  protocol:
-#    id: dubbo
-#    name: dubbo
-#    port: 20888
-#    status: server
-#  scan:
-#    basePackages: com.test.service.impl
-#  provider:
-#    version: 1.0
 
 #调用第三方http接口配置
 http:

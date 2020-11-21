@@ -4,6 +4,7 @@ import com.test.kafka.KafkaPartitioner;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,5 +75,11 @@ public class KafkaConfiguration {
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<String, String>(producerFactory());
+    }
+
+    //创建TopicName为SIMPLE的Topic并设置分区数为3以及副本数为1
+    @Bean//通过bean创建(bean的名字为initialTopic)
+    public NewTopic simpleTopic() {
+        return new NewTopic("SIMPLE", 3, (short) 1);
     }
 }
